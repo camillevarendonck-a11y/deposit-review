@@ -1,0 +1,44 @@
+CLAUDE CASE REVIEW — DEP-006
+Recorded: November 13, 2026
+Source: student-pasted Claude response. Model ID and original execution time not
+supplied. Manual chat workflow; this file is an assessment summary, not transcript.
+
+INPUT
+Fictional DEP-006: 300 USDC initiated 12:30 UTC November 10, 2026 (E1).
+No confirmation timestamp (E2); no credit timestamp (E3).
+Observation 14:00 UTC; target 120 minutes from initiation.
+Metric includes completed cases and overdue unresolved cases, excluding unresolved
+cases not yet due. Existing code uses duration <= 120 for on-time completion and
+elapsed > 120 for overdue unresolved cases.
+
+CORRECT
+90 minutes elapsed; deadline 14:30; 30 minutes remaining.
+Not yet due and unresolved on the available records.
+Excluded from both numerator and denominator at the stated observation time.
+No invented credit or confirmation timestamp.
+
+ISSUES — REVISION REQUIRED
+1. Unsupported normality and reassurance:
+   'An unconfirmed deposit at 90 minutes is not unusual evidence in itself' is
+   not established by the supplied evidence. No network or typical timing data
+   was provided; the record also does not prove actual lack of confirmation.
+   'Nothing suggests a problem' is stronger than warranted. Not yet due does
+   not establish normal operation; it means the deadline has not passed.
+2. Exact-boundary inconsistency:
+   The response says a still-unresolved case becomes overdue at 14:30. Under
+   the project's explicit elapsed > 120 convention, exactly 14:30 is still
+   not overdue. It becomes overdue immediately after 14:30 if no credit is
+   recorded. Credit timestamped exactly 14:30 is within target.
+   The prompt did not explicitly state the boundary operators, so this is a
+   mismatch with the implementation to clarify, not a violation of a stated
+   inequality in that prompt.
+
+DISPOSITION
+Core arithmetic and current classification pass; grounding and forward-looking
+boundary explanation need revision. Ask Claude to correct its answer using the
+explicit boundary convention, without claiming that a 90-minute wait is normal.
+No code change is required to accommodate the original response.
+
+LIMITS
+One authored synthetic example; not a statistical model-accuracy measure.
+DEP-006 remains a test case and is not added to the five-record demo dataset.

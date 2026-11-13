@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Deposit Review — Analysis workspace</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="style.css">
+    <script src="review.js" defer></script>
+    <script src="app.js" defer></script>
+</head>
+<body>
+<header class="appbar">
+    <div class="wrap appbar-inner">
+        <a class="brand" href="#workspace">Deposit<span>Review</span><span class="brand-divider">/</span><small>Operations</small></a>
+        <nav aria-label="Page sections"><a href="#workspace">Analysis</a><a href="#deposits">Queue</a><a href="#scenario">Scenario</a><a href="#method">Method &amp; limits</a></nav>
+        <span class="local-label">Local workspace</span>
+    </div>
+</header>
+<section class="hero">
+    <div class="wrap hero-inner">
+        <div>
+            <p class="eyebrow">CRYPTO DEPOSIT OPERATIONS</p>
+            <h1>From records to a review queue.</h1>
+            <p class="intro">Upload a deposit file, set your credit target, and see where to investigate.</p>
+        </div>
+        <span class="prototype-label">Research prototype</span>
+    </div>
+</section>
+<main id="workspace" class="wrap">
+    <!-- Uploads are sent to our local Python server, not to an AI service. -->
+    <section class="setup card" aria-labelledby="setup-title">
+        <div class="panel-heading"><h2 id="setup-title">Analysis setup</h2><span class="step-marker">INPUT</span></div>
+        <form id="analysis-form" class="setup-grid">
+            <div class="field field-file">
+                <label class="field-label" for="csv-file">Deposit records</label>
+                <div class="dropzone" id="dropzone">
+                    <span class="file-glyph" aria-hidden="true">CSV</span>
+                    <div class="drop-text">
+                        <strong id="file-label">Sample deposits.csv</strong>
+                        <span class="hint">Drop a CSV here, or choose a file</span>
+                    </div>
+                    <label class="choose-file" for="csv-file">Choose CSV</label>
+                    <input id="csv-file" type="file" accept=".csv,text/csv" class="sr-only">
+                </div>
+                <div class="file-actions">
+                    <a href="template.csv" download="deposit-template.csv">Download template</a>
+                    <button id="sample" type="button" class="text-button">5-record sample</button>
+                    <button id="demo" type="button" class="text-button">1,000-record demo</button>
+                    <a href="synthetic-demo.csv" download="synthetic-deposits.csv">Download demo CSV</a>
+                </div>
+                <div class="file-actions"><a href="realistic-example.csv" download="realistic-example.csv">Download mixed-format example</a></div>
+                <p class="hint file-limit">Up to 1 MB / 5,000 records</p>
+            </div>
+            <div class="field">
+                <label class="field-label" for="observation">Observation time <span>UTC</span></label>
+                <input id="observation" type="datetime-local" value="2026-11-10T14:00:00" step="1" required>
+                <p class="hint">Assess unresolved deposits at this point in time. All recorded events must be at or before it.</p>
+            </div>
+            <div class="field">
+                <label class="field-label" for="target">Credit-time target</label>
+                <div class="number-input"><input id="target" type="number" min="1" max="10080" step="1" value="120" required><span>minutes</span></div>
+                <p class="hint">Whole minutes, from 1 to 10,080.</p>
+            </div>
+            <div class="field field-submit">
+                <button class="analyze-button" id="analyze" type="submit">Analyze records <span aria-hidden="true">→</span></button>
+                <p id="form-status" role="status" class="form-status">Loading sample…</p>
+                <p id="form-error" role="alert" class="error" hidden></p>
+            </div>
+        </form>
+        <div class="setup-foot">
+            <div class="privacy-note"><strong>Processed on this computer</strong><p>Uploads are analyzed in memory by the local server. They are not saved or sent to Claude. Export results to keep a copy.</p></div>
+            <details class="format-help"><summary>Required CSV format</summary><p>Use exactly these five column names, in any order:</p><code>deposit_id<br>amount_usdc<br>initiated_at<br>confirmed_at<br>credited_at</code><p>Amounts: digits 0–9 with an optional decimal point, such as <code>1000.50</code>. Dates must include a time: <code>2026-11-10T10:00:00</code>. Blank confirmation and credit fields mean missing evidence. Times without an offset are treated as UTC.</p></details>
+        </div>
+    </section>
+
+    <div class="results-area" id="results-area">
+        <div class="results-toolbar"><div><span class="source-badge" id="source-badge">SAMPLE</span><strong id="result-source">Loading records…</strong></div><button id="export" class="outline-button" type="button" disabled>Export results ↓</button></div>
+        <p id="analysis-context" class="context">Waiting for analysis.</p>
+        <p id="synthetic-note" class="context" hidden>Fictional test data with deliberately chosen patterns. These rates do not describe a real company or the crypto market.</p>
+        <p id="stale-note" class="stale-note" hidden>Inputs changed. Results below show the last successful analysis. Click Analyze records to update.</p>
+        <!-- One primary metric, with its denominator visible. -->
+        <section class="overview" aria-label="Performance overview">
+            <div class="attainment card"><p class="metric-label">Credited within target</p><div class="main-value" id="target-rate">—</div><p id="rate-detail">Waiting for valid records</p><p class="small-note">Overdue unresolved cases count as failures.<br> Unresolved cases not yet due are excluded.</p></div>
+            <div class="breakdown card"><div class="breakdown-heading"><h2>Deadline breakdown</h2><span>All deposits</span></div><div id="deadline-chart"></div></div>
+        </section>
+        <section class="secondary-metrics" aria-label="Supporting metrics">
+            <article class="card"><p>Total deposits</p><strong id="total">—</strong><span id="completion-note">— completed</span></article>
+            <article class="card"><p>No credit recorded</p><strong id="unresolved" class="amber">—</strong><span id="unresolved-note">— overdue</span></article>
+            <article class="card"><p>Median time to credit</p><strong id="median">—</strong><span>Completed deposits only</span></article>
+        </section>
+        <section class="findings" aria-labelledby="findings-title"><h2 id="findings-title">Investigation findings</h2><p class="findings-scope">Full analyzed dataset · Based on recorded timestamps · Queue filters do not change this summary</p><ul id="findings-list"></ul></section>
+        <section class="records-section card" id="deposits" aria-label="Deposit records">
+            <div class="records-title"><div><h2>Investigation queue</h2><p>Overdue with no credit recorded first, longest overdue at the top. Completed late cases follow.</p></div><span id="record-count" class="record-count">— records</span></div>
+                <div class="queue-guide" role="note"><strong>How to read this queue</strong><ol><li><b>Overdue, no credit</b> longest overdue first</li><li><b>Completed late</b> biggest overrun first</li><li><b>Not yet due</b> recheck later</li><li><b>Within target</b> nothing to chase</li></ol><p>Higher means check sooner, not more serious. Open <em>Inspect</em> for the evidence and a suggested next check.</p></div>
+            <div class="table-controls"><label class="search-label"><span class="sr-only">Search deposit ID</span><input id="search" type="search" placeholder="Search deposit ID…"></label><label><span class="sr-only">Filter deadline status</span><select id="filter"><option value="all">All deadline statuses</option><option value="late">All late / overdue</option><option value="overdue">Overdue, no credit recorded</option><option value="completed-late">Completed late</option><option value="within">Within target</option><option value="pending">Not yet due</option></select></label><label><span class="sr-only">Filter evidence</span><select id="evidence-filter"><option value="all">All evidence statuses</option><option value="missing-confirmation">Confirmation missing</option><option value="missing-credit">Credit missing</option><option value="complete">Confirmation + credit recorded</option></select></label></div>
+            <div class="table-scroll"><table><thead><tr><th scope="col">Deposit</th><th scope="col" class="amount">USDC</th><th scope="col">Deadline</th><th scope="col" class="amount">Over target by</th><th scope="col">Evidence / investigation</th><th scope="col"><span class="sr-only">Inspect record</span></th></tr></thead><tbody id="record-rows"></tbody></table></div>
+            <p id="table-status" class="table-status" role="status">Loading records…</p>
+            <div class="pagination"><button id="previous" type="button" class="outline-button">Previous</button><span id="page-number">Page 1</span><button id="next" type="button" class="outline-button">Next</button></div>
+            <div class="legend"><span><i class="dot teal"></i>Within target</span><span><i class="dot amber-bg"></i>Delayed / awaiting credit</span><span><i class="dot gray"></i>Missing evidence / not yet due</span></div>
+            <section id="case-detail" class="case-detail" aria-label="Selected deposit evidence" tabindex="-1" hidden></section>
+        </section>
+        <section class="scenario" id="scenario" aria-labelledby="scenario-title">
+            <div class="scenario-copy"><span class="scenario-label">ILLUSTRATIVE SCENARIO · NOT A FORECAST</span><h2 id="scenario-title">What if the wait after confirmation were halved?</h2><p>Apply a 50% shorter wait only to completed late deposits that spent more time after confirmation than before it. All other records stay unchanged.</p></div>
+            <p id="scenario-measure" class="scenario-measure">Deposits meeting the selected credit-time target</p>
+            <div class="scenario-comparison">
+                <div class="scenario-result"><span>Current records</span><strong id="scenario-before-count">—</strong><p id="scenario-before-denominator">Waiting for analysis</p><span class="scenario-rate" id="scenario-before">—</span><div class="mini-track" aria-hidden="true"><div id="before-bar"></div></div></div>
+                <span class="scenario-arrow" aria-hidden="true">→</span>
+                <div class="scenario-result"><span>With the assumed shorter wait</span><strong id="scenario-after-count" class="blue">—</strong><p id="scenario-after-denominator">Waiting for analysis</p><span class="scenario-rate blue" id="scenario-after">—</span><div class="mini-track" aria-hidden="true"><div id="after-bar"></div></div></div>
+            </div>
+            <p id="scenario-status" class="scenario-outcome">Waiting for analysis.</p>
+            <p id="scenario-exclusions" class="scenario-footnote"></p>
+            <p class="scenario-footnote">This calculation does not show that the shorter wait is achievable. Causes, feasibility and business impact require further investigation.</p>
+        </section>
+    </div>
+    <section id="method" class="method card"><h2>What these results establish</h2><p>These are record-based triage signals. Missing evidence does not prove an event never happened, establish fraud, or show that funds are lost. The scenario changes recorded waits under an assumption; feasibility and real-world impact are untested.</p><p>Amounts are denominated in USDC. A recorded credit requires a recorded confirmation in this prototype; reconcile incomplete source records before uploading. At exactly the target, a completed deposit is within target and an unresolved deposit is not yet overdue.</p></section>
+    <footer><span>Deposit Review / Operations analysis</span><span>Python calculations · Human investigation</span></footer>
+</main>
+</body>
+</html>

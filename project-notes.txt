@@ -1,0 +1,22 @@
+Project: Why are crypto deposits delayed?
+
+User:
+An operations analyst at a crypto platform.
+
+Problem:
+A customer has sent crypto, but their account balance has not updated.
+
+Business question:
+Where do deposits get delayed, and what should the team investigate first?
+
+Deposit stages:
+1. The customer initiates a transfer.
+2. The blockchain records and confirms it.
+3. The platform credits the customer's account.
+
+Important distinction:
+Blockchain confirmation and account credit are separate events.
+
+Data:
+I will start with five fictional deposits.
+These records will not represent any real company's performance.

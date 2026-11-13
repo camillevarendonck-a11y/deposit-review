@@ -1,0 +1,14 @@
+{
+    "original_rate": 20.0,
+    "scenario_rate": 40.0,
+    "additional_within_target": 1,
+    "affected_records": [
+        {
+            "deposit_id": "DEP-003",
+            "original_minutes": 180.0,
+            "scenario_minutes": 95.0,
+            "meets_target": true
+        }
+    ],
+    "assumption": "Halve after-confirmation waits only for completed, overdue deposits whose larger wait occurred after confirmation. All other records are unchanged."
+}

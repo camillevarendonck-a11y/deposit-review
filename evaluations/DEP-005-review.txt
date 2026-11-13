@@ -1,0 +1,26 @@
+CLAUDE CASE REVIEW — DEP-005
+Recorded: November 13, 2026
+Source: Claude response pasted by the student. Model ID and execution time not supplied.
+Manual chat workflow, not an API call. This is an evaluation summary, not the full transcript.
+
+INPUT
+E1: Fictional DEP-005, 1,000 USDC initiated 10:00 UTC, November 10, 2026.
+E2: No confirmation timestamp recorded.
+E3: No account-credit timestamp recorded.
+Observation: 14:00 UTC. Fictional target: 120 minutes from initiation.
+
+ASSESSMENT
+Arithmetic: pass. Elapsed time 240 minutes; deadline 12:00; observation 120
+minutes after the deadline. Does not report 240 minutes as a completed duration.
+Record-based classification: pass. Overdue/unresolved on available records,
+explicitly allowing that actual credit may have occurred without being recorded.
+Grounding and uncertainty: pass. No invented confirmation, credit time, network
+failure, fraud, recovery claim, or lost funds. Does not locate a before/after
+confirmation delay when confirmation evidence is missing.
+Next step: useful. Reconcile source event records and check other components or
+identifiers. In practice, scope the relevant systems rather than imply exhaustive
+proof across every possible record is achievable.
+
+LIMITS
+One manually assessed synthetic response, not an accuracy estimate or production
+validation. Original Claude conversation should be retained as full source evidence.

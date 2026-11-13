@@ -1,0 +1,36 @@
+CLAUDE REVIEW 02 — DISPOSITION
+Recorded November 13, 2026. The original supplied response is preserved in
+claude-review-02-response.txt. Model ID was not supplied. Claude reported running
+five tests and additional probes in a scratch folder; that report is attributed
+to Claude. Our subsequent local verification ran nine tests successfully.
+
+ACCEPTED AND IMPLEMENTED
+- Replaced all seven script assert checks with explicit ValueError failures.
+  Duplicate input is now rejected under normal Python and python -O, with
+  existing output files preserved.
+- Added deadline_status independently of category to CSV and JSON exports and
+  the dashboard table. Missing confirmation can coexist with Not yet due.
+- Added tests for invalid timestamp text, credited without confirmation, exact
+  target boundaries, and optimized Python. Expanded the recent unresolved case
+  check to confirm that the completed count and completed-only median stay fixed.
+- Added median_scope metadata to summary.json while preserving its existing
+  median_completion_minutes key so the dashboard remains compatible.
+
+QUALIFIED
+- Keep the 155-minute completed-only median and label its population clearly.
+  A claim about the final overall median requires assumptions about missing
+  records and eventual completion, as recorded after review 01.
+- Keep the current scenario restricted to observed completed cases; continue
+  labeling its 50% reduction as hypothetical and its real-world effect untested.
+
+DEFERRED
+- Atomic publication of the four output files. Validation failures now occur
+  before any exports. A process interruption or filesystem failure during the
+  export phase could still leave a partially updated set; no transaction-safe
+  publication or crash recovery is claimed.
+
+RESULTS
+The demo retains 5 synthetic records, 2 without recorded credit, 20% target
+attainment, a 155-minute completed-only median, and a 40% scenario result.
+Additional test records are isolated fixtures, not changes to the demo data.
+No Claude API integration or general model-accuracy result is claimed.

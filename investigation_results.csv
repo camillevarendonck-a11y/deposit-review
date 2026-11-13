@@ -1,0 +1,6 @@
+deposit_id,amount_usdc,deadline_status,category
+DEP-001,100,Within target,Completed within target
+DEP-002,250,Over target,Over target; most waiting before confirmation
+DEP-003,500,Over target,Over target; most waiting after confirmation
+DEP-004,75,"Overdue, no credit recorded","Confirmed, awaiting account credit"
+DEP-005,1000,"Overdue, no credit recorded",Missing confirmation evidence

@@ -1,0 +1,92 @@
+I'll start by listing the project folder and checking what's in it, read-only.
+
+The shell mount failed, so I'll try the folder through the file-listing tool.
+
+The files are small, so I'll stage a read-only copy into my workspace and run everything there. Your originals stay untouched.
+
+I found one verified bug that affects users, plus a few small ones. The calculations, deadline boundaries, filters, ordering, suggested checks, CSV export and scenario all match the documentation.
+
+I changed nothing in your folder. I ran everything on a copy in my workspace (Python 3.13, Node 22), including the CLI and the walkthrough script, because those write output files.
+
+## Test results
+
+- **Python:** 23 of 23 pass. My first run had 2 errors only because I hadn't copied `synthetic_deposits.csv` (the 1,000-row file). Once I copied it, all 23 passed.
+- **JavaScript:** `node --test tests/test_review.js` passes 3 of 3.
+- **Browser:** I drove the dashboard in headless Chromium and found no page errors. The three console errors it logged were deliberate bad-input tests.
+
+## Verified bugs
+
+### 1. An extreme timestamp crashes the request and the browser shows only "Failed to fetch"
+- **Where:** `engine.py:20` and `server.py:75`.
+- **Reproduce:** a row with `initiated_at` = `0001-01-01T00:00:00+05:00`.
+- **What happens:** `astimezone(utc)` raises `OverflowError`. The server only catches `ValueError`, `TypeError` and `UnicodeDecodeError`, so it drops the connection (curl got an empty response). The CLI prints a raw traceback.
+- **Fix:** in `timestamp()`, catch `OverflowError` and raise the same `ValueError`. In `do_POST`, add a final `except Exception` that returns a JSON 500.
+
+### 2. Percentages round half-to-even instead of half-up (minor)
+- **Where:** `engine.py:112` and `engine.py:126`, using Python's `round()`.
+- **Reproduce:** 1 of 16 deposits within target is exactly 6.25%, and it displays as 6.2%.
+- **Fix:** use `Decimal(...).quantize(Decimal('0.1'), ROUND_HALF_UP)`, or document the rounding.
+
+### 3. Validation is looser than the documentation says (minor)
+- **Where:** `engine.py:52` and `engine.py:16`.
+- **What I saw:**
+  - Amounts like `1_000` and full-width digits (`１００`) are accepted.
+  - Date-only timestamps (`2026-11-10`) are accepted. Python 3.11+ is lenient here.
+  - IDs `a` and `A` count as distinct.
+- **Fix:** match amounts against `^\d+(\.\d+)?$`. Require a `T` and a time in timestamps. Decide whether IDs should be case-insensitive.
+
+### 4. Committed output files are out of date (low)
+- `summary.json`, `scenario.json` and `investigation_results.json` differ from what `python3 analysis.py` writes now. They lack `eligible_deposits`, `affected_records` and `assumption`. `analysis_walkthrough.py` produces this older format, and running it overwrites the newer files.
+- The README doesn't mention that the walkthrough rewrites those files.
+- **Fix:** re-run `analysis.py` once, and add that note to the README.
+
+## Optional improvements
+
+- **Test gap:** nothing tests `app.js` (queue ordering, export, `minutesOverTarget`). I checked those by hand in the browser. I'd also add a test for the overflow case above.
+- **Naming:** the `over_target` key in `summary.json` counts overdue unresolved deposits too (4 in the sample, but only 2 are "Over target" in the table). The dashboard chart labels it correctly ("Over target / overdue"). Consider renaming the key to `late_or_overdue`.
+- **Category label:** a not-yet-due deposit with no confirmation reads "Missing confirmation evidence". The separate deadline column does show "Not yet due", so this is cosmetic.
+- **Export precision:** the export writes `minutes_over_target` unrounded, so it could show 1.6666666666666667 for second-level data. This is from reading the code; I didn't trigger it.
+- **CLI order:** the CLI's `investigation_results.csv` is in input order, not queue order. The README only promises queue order for the dashboard export.
+- **Folder clutter:** there is a stray 0-byte file named `python3` in the project root, plus `.DS_Store` and `__pycache__`.
+- **Direct URL:** `/index.html` returns 404; only `/` works.
+
+## Independent recalculation
+
+My own arithmetic on the five records (observed 14:00, target 120 minutes) matches the app, `summary.json` and `scenario.json`:
+
+| Record | Minutes | Status |
+|---|---:|---|
+| DEP-001 | 15 | within target |
+| DEP-002 | 155 | late (150 before confirmation, 5 after) |
+| DEP-003 | 180 | late (10 before, 170 after) |
+| DEP-004 | 240, no credit | overdue |
+| DEP-005 | 240, no confirmation or credit | overdue |
+
+- **Rate:** 1 of 5, so 20%.
+- **Median:** 155, over the three completed records only.
+- **Scenario:** DEP-003 goes to 10 + 85 = 95 minutes, giving 2 of 5, so 40%. DEP-002 is not eligible because its larger wait is before confirmation.
+
+I also recomputed the 1,000-record demo with separate code that doesn't use the engine. It matches `SYNTHETIC-DATA.md` exactly:
+- 850 completed, 650 within target, 290 late or overdue, 60 not yet due.
+- 940 eligible, 69.1% attainment, median 80 minutes.
+- 57 extra successes under the scenario, giving 75.2%.
+
+## Other checks
+
+- **Boundaries:** a credit at exactly 120 minutes counts as within target, and 1 second more is late. An unresolved deposit at exactly 120 is not yet due, and 1 second more is overdue. The scenario counts a record that lands on exactly 120, and an equal split is excluded. All as documented.
+- **Filters:** all 11 filter combinations on the sample gave correct results, including the empty case.
+- **Queue order:** on the 1,000-row demo the order is overdue, then completed late, then not yet due, then within target, with the tie-break rules as documented.
+- **Suggested checks:** all five sample records get the expected next-check text.
+- **Export:** it contains all records in queue order even when a filter is active. Fields starting with `=` get an apostrophe prefix, and quotes and commas are escaped. It is disabled while results are stale, and after a failed analysis.
+- **Upload limits:** the 1 MB limit, the 5,000-row limit, bad-order errors and the stale-results warning all work.
+- **Server:** it rejects requests with a wrong Host or Origin (403). It doesn't serve `engine.py` or path traversal. There are no external network references in the page.
+- **Reproducibility:** regenerating the demo data reproduces `synthetic_deposits.csv` byte for byte.
+
+## Not tested
+
+- Real Chrome, Safari or Firefox. I only used headless Chromium, so `datetime-local` and drag-and-drop may behave differently elsewhere.
+- Python 3.14 (your `.pyc` files are 3.14); I ran 3.13.
+- Opening the export in Excel or Sheets. I only checked the text of the escaping.
+- Accessibility (WCAG or screen reader), mobile layout and keyboard focus.
+- The Claude review and evaluation files. I read the notes and summary but can't verify claims about earlier chats.
+- Performance and concurrent users.

@@ -1,0 +1,72 @@
+I'll check whether the files are in the workspace so I can run the tests without modifying anything.
+
+The workspace folder is empty, so I'll use the read-only upload copies. I'm copying them into a scratch folder to run the tests, which leaves your originals untouched.
+
+All five tests pass. Next I'll probe the claims the tests don't cover: whether validation can be bypassed, and what the exported categories show for DEP-005 and DEP-006.
+
+I ran the test suite and it passed: 5 of 5. I ran it in a scratch copy of your uploaded files, so none of your files were changed. The test file finds `analysis.py` via `parents[1]`, so it only works from a subfolder such as `tests/`, which is how I placed it.
+
+## 1. Do the fixes address my findings?
+
+**Demonstrated:**
+- **Malformed DEP-005 row:** Fixed. `deposits.csv` now ends `DEP-005,1000,2026-11-10T10:00:00,,` (five fields), and the loader rejects short or long rows (lines 20–25 of `analysis.py`). Test `test_missing_column…` confirms it.
+- **Validation before calculation:** Fixed. Duplicate-ID and event-order checks now run right after loading (lines 32–59).
+- **Exports after validation:** Fixed. All four output files are written at the end (line 311 onward).
+- **Untested "not yet due" branch:** Fixed. The DEP-006 test exercises it.
+
+**Not addressed (code unchanged, and you didn't claim otherwise):**
+- The scenario still only touches completed deposits.
+- The category labels still don't carry overdue status (see section 4).
+- The median is still completed-only (see section 5).
+
+## 2. Can a validation failure still overwrite an output file?
+
+**Demonstrated, in the normal case: no.** I put sentinel text in all four output files and fed in a duplicate ID. The script exited with an `AssertionError` and `summary.json` still held the sentinel. Your three rejection tests check the same thing for a short row, bad event order and duplicate IDs.
+
+**Demonstrated, one real hole:** your checks are `assert` statements, and Python removes them when run as `python -O`. I ran the same duplicate-ID file with `-O`. The script exited 0, accepted the bad data, and overwrote the outputs. Normal runs are safe, but the protection depends on how the script is launched.
+
+**Suggestions, not demonstrated:**
+- Replace `assert` with `raise ValueError(...)` for the source-data checks.
+- Write each output to a temporary file, then rename it. A crash halfway through the four writes could currently leave a mix of old and new files.
+- Add tests for an unparseable timestamp and for "credit without confirmation". The code handles both, but nothing tests them.
+
+## 3. Test expectations, checked independently
+
+I recomputed the expected values by hand last turn. They agree with your tests:
+- **Original data:** 5 total, 2 unresolved, 20%, median 155, scenario 40%, and 5 exported rows.
+- **With DEP-006** (12:30, 90 minutes old at 14:00): it is not yet due, so `not_yet_due` is 1 and `over_target` stays 4. The rate stays 20% because DEP-006 is excluded from the denominator, and unresolved becomes 3.
+
+**Suggestions for gaps:**
+- The DEP-006 test doesn't assert that the median is still 155 or that `completed_deposits` is still 3.
+- There is no boundary test. The code uses `<=` 120 for completed deposits and `> 120` for unresolved ones, so a deposit at exactly 120 minutes is within target if credited, and not yet due if unresolved. That is reasonable, but untested.
+
+## 4. Missing evidence vs. overdue
+
+I need to correct my earlier review. I called "Missing confirmation evidence" for DEP-006 a probable mistake. That was too strong. The label describes the evidence, and DEP-006 does lack confirmation. Your test expectation is defensible.
+
+**Demonstrated:** The calculations separate the two ideas correctly. DEP-006 is "Not yet due" and is excluded from the rate, while DEP-005 is "Over target, still unresolved". However, the exported files lose that distinction. With DEP-006 added, both rows read the same in `investigation_results.csv`:
+
+```
+DEP-005,1000,Missing confirmation evidence   (240 min old)
+DEP-006,300,Missing confirmation evidence    (90 min old)
+```
+
+Anyone reading only the export or dashboard JSON can't tell them apart, and investigation priority depends on exactly that. This is not a calculation error. It is a gap in what the export carries.
+
+**Suggestion:** add a separate `deadline_status` column (overdue, not yet due, within target, over target) beside `category`, rather than merging the two into one label. Your DEP-006 test would then also assert `not yet due`.
+
+## 5. Is 155 correctly described as completed-deposit-only?
+
+**Demonstrated:** Yes. `completed_times` only includes rows with a `credited_at` value, so 155 is the median of 15, 155 and 180 (DEP-001, 002, 003). DEP-004 and DEP-005 are excluded.
+
+**Caveat on wording:** `summary.json` calls the field `median_completion_minutes`. The neighbouring `completed_deposits: 3` helps, but the field name doesn't say that unresolved deposits are left out. If you include DEP-004 and DEP-005 as "at least 240 minutes", the median of all five is 180, whatever they eventually take. A reader could take 155 as the typical wait for all deposits. I'd suggest renaming the field to something like `median_completed_minutes` or adding a one-line note in your write-up.
+
+## Summary
+
+| Item | Status |
+|---|---|
+| Malformed row, validation order, export order | Fixed, tested |
+| Validation can't overwrite outputs | True for normal runs; bypassed by `python -O` |
+| Test expectations | Correct against my independent calculation; a few gaps |
+| Missing evidence vs. overdue | Separated in the counts, merged in the exports |
+| 155 as completed-only | Correct; the field name should say so |

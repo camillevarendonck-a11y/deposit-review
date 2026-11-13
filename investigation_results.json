@@ -1,0 +1,32 @@
+[
+    {
+        "deposit_id": "DEP-001",
+        "amount_usdc": "100",
+        "deadline_status": "Within target",
+        "category": "Completed within target"
+    },
+    {
+        "deposit_id": "DEP-002",
+        "amount_usdc": "250",
+        "deadline_status": "Over target",
+        "category": "Over target; most waiting before confirmation"
+    },
+    {
+        "deposit_id": "DEP-003",
+        "amount_usdc": "500",
+        "deadline_status": "Over target",
+        "category": "Over target; most waiting after confirmation"
+    },
+    {
+        "deposit_id": "DEP-004",
+        "amount_usdc": "75",
+        "deadline_status": "Overdue, no credit recorded",
+        "category": "Confirmed, awaiting account credit"
+    },
+    {
+        "deposit_id": "DEP-005",
+        "amount_usdc": "1000",
+        "deadline_status": "Overdue, no credit recorded",
+        "category": "Missing confirmation evidence"
+    }
+]

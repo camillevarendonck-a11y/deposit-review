@@ -1,0 +1,55 @@
+CLAUDE REVIEW 01 — REVIEW RECORD
+Recorded: November 13, 2026
+Source: Claude response supplied by Camille in the project chat.
+This is a summary and disposition of that response, not its complete transcript.
+The Claude model ID and original conversation timestamp were not supplied.
+No Claude API execution is claimed.
+
+PURPOSE
+Review the Python analysis, five synthetic deposits, saved summary, and scenario.
+Claude reported recalculating by hand rather than running the script.
+
+CONFIRMED FINDINGS
+- 5 deposits: 3 completed and 2 with no recorded credit.
+- 1 of 5 eligible deposits credited within 120 minutes: 20%.
+- Completed-only median: 155 minutes.
+- Scenario changes DEP-003 from 180 to 95 minutes; attainment becomes 40%.
+- DEP-005 was one CSV field short.
+- Some exports occurred before validation.
+- No original example exercised the not-yet-due unresolved branch.
+
+CHANGES APPLIED
+1. Corrected DEP-005 to contain two explicit empty timestamp fields.
+2. Added header and row-width checks; malformed rows are rejected instead of
+   silently turning absent columns into None.
+3. Moved source ID and timestamp checks ahead of calculations.
+4. Moved every CSV/JSON export after validation and scenario calculations.
+5. Added isolated checks for the baseline, not-yet-due case, malformed CSV,
+   invalid timestamp order, and duplicate IDs. Invalid-input checks verify that
+   previous output files are not overwritten.
+
+QUALIFICATIONS / RECOMMENDATIONS NOT APPLIED AS STATED
+- The 155-minute median is correct for completed deposits, as already labeled.
+  It is not the overall final completion-time median. The suggested 180-minute
+  overall result depends on unfinished cases actually remaining unfinished at
+  the snapshot and eventually completing after their elapsed waits; missing
+  evidence alone does not establish those assumptions.
+- Missing confirmation evidence can correctly describe a recent deposit.
+  Evidence status and deadline status are different dimensions. A future
+  enhancement can show them as separate table columns.
+- The 50% improvement is a hypothetical assumption, not an observed causal effect.
+- No recovery, fraud, real company performance, or measured savings are inferred.
+
+TEST EVIDENCE
+Run from the project folder:
+    python3 -m unittest discover -s tests -v
+
+Five checks passed after the changes. DEP-006 exists only in an isolated temporary
+fixture, not in the displayed dataset. Its expected results are 6 total, 3 with no
+recorded credit, 1 not yet due, 4 over target, and 20% target attainment.
+The displayed dataset remains five records with its original numerical results.
+
+LIMITATIONS
+These checks validate authored synthetic examples; they do not establish real-world
+accuracy or general Claude reliability. This review does not create an API
+integration. Preserve the actual Claude conversation separately as source evidence.

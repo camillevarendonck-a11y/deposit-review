@@ -1,0 +1,37 @@
+CLAUDE CASE REVIEW — DEP-003
+Recorded: November 13, 2026
+Source: Claude response pasted by the student into the project conversation.
+Model ID and original execution time not supplied. Manual chat workflow, not API.
+This file records the evaluation, not a verbatim copy of the response.
+
+INPUT
+Fictional deposit: 500 USDC initiated 2026-11-10 10:00 UTC (E1),
+confirmation recorded 10:10 (E2), account credit recorded 13:00 (E3).
+Observation 14:00 UTC. Stated target 120 minutes from initiation.
+
+OBSERVED RESPONSE
+Claude reported 10 minutes to confirmation, 170 minutes from confirmation to
+credit, 180 total, approximately 94% after confirmation, and credit 60 minutes
+past the 12:00 deadline. Classified the case as completed and late.
+Cited E1/E2/E3 for stage and target conclusions. Did not invent congestion,
+fraud, lost funds, or a specific system failure. Identified gaps in timestamp
+meaning, reliability, and intermediate event records. Proposed obtaining event
+logs for the 10:10–13:00 interval and checking record provenance.
+
+EVALUATION
+- Arithmetic: pass. 170 / 180 = 94.44%; approximately 94% is reasonable.
+- Completion and timing classification: pass.
+- Support for core factual findings: pass; citations match the supplied evidence.
+- Preservation of causal uncertainty: pass; locates recorded waiting without
+  claiming a cause.
+- Investigation step: useful and specific; logs may still be incomplete, so
+  obtaining them does not guarantee an explanation.
+- Minor issue: Claude questioned whether the target applies to this deposit.
+  The task supplies that target for this fictional case, so this is unnecessary
+  uncertainty in this exercise. Target applicability can be worth checking in
+  real work, but the supplied assumption should remain explicit and accepted.
+
+SCOPE
+One manually assessed synthetic response. Not a model accuracy rate, independent
+study, production validation, or evidence of an API integration. Preserve the
+original Claude conversation separately as the full source record.

@@ -1,0 +1,183 @@
+CODEX AND CLAUDE: CONTRIBUTIONS TO DEPOSIT REVIEW
+Evidence record for the competition and job interviews
+Prepared November 13, 2026
+
+ATTRIBUTION SUMMARY
+
+Camille used Claude Code for design and step-by-step guidance, as well as
+Claude for analysis and code reviews. Codex also contributed implementation,
+interface revisions, testing, debugging and documentation in this workspace.
+Camille directed the project and refined the workflow. Both tools contributed;
+no overall majority or numerical percentage of contribution is established.
+
+The design and guidance contribution is recorded from Camille's clarification
+on November 13, 2026. The corresponding Claude Code sessions have not yet been
+archived here; the supplied review responses and their assessment records are
+listed below.
+
+1. WHAT I BUILT
+
+Deposit Review is a local data-analysis prototype for crypto deposit operations.
+It accepts deposit CSV records, applies a user-selected time target, prioritizes
+overdue cases, separates missing evidence from recorded events, and suggests
+which records an analyst could check next. It includes a hypothetical timing
+scenario and a reproducible 1,000-record synthetic demonstration.
+
+2. CODEX CONTRIBUTIONS RECORDED IN THIS WORKSPACE
+
+Under Camille's direction, Codex produced and revised the project's working
+implementation, including:
+- The Python analysis engine, CSV validation and local upload server.
+- The dashboard's HTML, styling, layout and interactive controls.
+- CSV upload and export, filters, pagination and investigation queue ordering.
+- The Inspect view, deterministic suggested checks and findings summary.
+- The reproducible 1,000-record synthetic-data generator.
+- The hypothetical scenario calculation and its explanatory presentation.
+- Automated checks, local browser verification and debugging.
+- Fixes prompted by Claude's reviews, including timestamp validation and
+  separating the walkthrough's outputs from current analysis outputs.
+- Project documentation and the summaries assessing Claude's review responses.
+
+Codex also provided explanations during the guided walkthroughs in this chat.
+These contributions describe the work recorded here; they are not an exhaustive
+account of Camille's separate Claude Code sessions.
+
+3. HOW CLAUDE CODE AND CLAUDE CONTRIBUTED
+
+DESIGN AND STEP-BY-STEP GUIDANCE
+Camille reports using Claude Code to help with the project's design and to
+provide step-by-step guidance while building and understanding the project.
+This contribution extends beyond reviewing the finished work. Specific design
+versions, prompts and changes should be linked to the original Claude Code
+sessions when those records are available; no unsupported file-level authorship
+or session transcript is invented here.
+
+ANALYSIS AND CODE REVIEW
+Claude was also used to challenge calculations, explanations, assumptions and
+validation behavior, through the case responses and project review below.
+
+A. Reviewing the analysis
+Claude reviewed the five-record example and the timing scenario. The saved
+review record covers checks of the 20% target-attainment rate, 155-minute
+completed-only median, and hypothetical improvement to 40%. It identified a
+malformed CSV row, exports occurring before validation and the absence of a
+not-yet-due test case. Those findings informed subsequent corrections.
+
+B. Reviewing investigation explanations
+Three deliberately selected fictional cases were used:
+- DEP-003: completed late, with most recorded waiting after confirmation.
+- DEP-005: overdue with neither confirmation nor credit evidence recorded.
+- DEP-006: unresolved but not yet due; excluded from the eligible denominator.
+
+Claude's first DEP-006 explanation included unsupported reassurance about
+normality and an exact-boundary explanation inconsistent with the code. Explicit
+feedback clarified that a recorded credit at 120 minutes is within target, while
+an unresolved case becomes overdue only after 120 minutes. The revised response
+removed the reassurance and applied the boundary correctly. The original and
+revised assessment records are both retained. This is one revised case, not
+an additional independent evaluation.
+
+C. Reviewing the current project with Claude Code
+The latest response reports testing a scratch copy and independently checking
+the sample, large demo, filters, queue ordering and export. It also reported an
+extreme timestamp error, permissive input formats and outdated saved outputs.
+Codex reproduced those issues locally, implemented corrections, refreshed the
+exports and added regression checks. After these fixes, 29 Python checks and
+3 JavaScript checks passed. A live local request verified that the timestamp
+error returns a clear validation response instead of dropping the connection.
+
+D. Skill and MCP server (added November 13, 2026)
+In a Claude session, directed by Camille, Claude wrote a project skill
+(.claude/skills/deposit-review/SKILL.md), a read-only MCP server (mcp_server.py,
+deposit_tools.py, .mcp.json) and tests/test_mcp_tools.py. Claude tested the
+server over the MCP protocol with mcp 2.3.0 and 1.30.0 in a scratch copy: three
+tools listed, results matching the dashboard, and path and setting errors
+rejected. Camille then ran one session in Claude Code 2.1.323 (Opus 5.5) on her
+computer on November 13, 2026 (saved as claude-code-test-session.txt): the skill
+loaded, the MCP server connected with three tools and was called five times,
+and the output matched the sample (20.0%, 155-minute median, 40.0% scenario,
+queue DEP-004, DEP-005, DEP-003, DEP-002, DEP-001). Not tested: Python 3.14
+specifically, repeated runs, or a formal skill evaluation. One session shows the
+pieces work together; it does not measure reliability.
+
+4. CAMILLE'S ROLE AND THE DIVISION OF WORK
+
+Camille selected the business problem and intended users, requested and refined
+the workflow, used Claude Code for design and step-by-step guidance, used
+Claude for reviews, and assessed the project through guided walkthroughs. Independent business-user validation has not yet been completed.
+
+Claude supplied the review responses described above. Codex assessed those
+responses against the local files and implemented the accepted corrections.
+The design and guidance work Camille describes should be credited alongside
+these reviews. The implementation should be presented as work developed with
+AI assistance, with contributions attributed by activity rather than an
+unsupported overall ranking. Camille should be able to explain the analysis
+rules and resulting decisions.
+
+5. WHAT THIS DOES NOT CLAIM
+
+- The dashboard does not call Claude's API. There is no live Claude API integration
+  or autonomous Claude agent in this prototype. A Claude Code skill and a local,
+  read-only MCP server were added on November 13, 2026 (see section 3D); they are
+  not part of the dashboard and were tested only as described there.
+- Its findings and next-check suggestions use deterministic rules. The displayed
+  suggestions are not live Claude-generated answers.
+- All demonstration records are synthetic. Their frequencies, timing patterns
+  and 50% scenario assumption are deliberately chosen, not company findings.
+- No operational time savings, cost savings, causal diagnosis or production
+  readiness have been established. Missing records do not prove lost funds.
+- Selected case reviews do not establish a statistical model accuracy rate.
+- Model IDs and original session timestamps were not supplied. Recorded dates
+  in the evidence files describe documentation dates, not authenticated run times.
+- Claude's reported tool execution is attributed to the supplied review; the
+  full execution logs and original session exports are not in this folder.
+
+6. EVIDENCE INDEX (PATHS RELATIVE TO THIS FOLDER)
+
+claude-review-01.txt
+  Assessment summary and disposition of the first analysis review; not a full
+  transcript.
+claude-review-02-response.txt
+  Preserved response supplied for the follow-up code review.
+claude-review-02-notes.txt
+  Historical disposition of that review; test counts and demo size describe that
+  earlier version, not today's full project.
+evaluations/DEP-003-review.txt
+  Assessment summary of the completed-late case.
+evaluations/DEP-005-review.txt
+  Assessment summary of the missing-evidence case.
+evaluations/DEP-006-review.txt
+  Assessment of the original response, retaining its identified issues.
+evaluations/DEP-006-revised-review.txt
+  Assessment of the revision and exact-boundary correction.
+evaluations/review-summary.txt
+  Historical summary of the three selected case reviews.
+evaluations/claude-review-03-response.txt
+  Latest user-supplied Claude Code response, copied verbatim.
+evaluations/claude-review-03-disposition.txt
+  Findings reproduced here, fixes, tests, design choices and remaining limits.
+evaluations/review-prompt-record.txt
+  Suggested review prompt, explicitly not verified as the exact executed input.
+
+claude-code-test-session.txt
+  Saved Claude Code session testing the skill and MCP server (November 13, 2026;
+  records the Claude Code version and model).
+
+7. SHORT PRESENTATION WORDING
+
+“I developed a crypto deposit analysis prototype using Claude Code for design
+and step-by-step guidance. I also used Claude to review calculations, case
+explanations and code. Codex helped implement and refine the application,
+generate synthetic data, verify findings, run checks and apply corrections.
+I selected the problem and refined the workflow while learning how the analysis
+works. The tool uses synthetic records and rule-based investigation guidance;
+it has no live Claude API integration.”
+
+8. SUBMISSION CHECK STILL NEEDED
+
+The project is intended for the data-analysis format described in the competition
+information supplied in the conversation. Confirm the exact “built with Claude”
+requirement against the official rubric. Include the Claude Code design and
+guidance sessions, or representative prompts and outputs, alongside the saved
+reviews so the submission demonstrates the contribution Camille describes.
+Do not claim an API integration, agent or skill that has not been implemented.

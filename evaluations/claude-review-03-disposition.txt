@@ -1,0 +1,45 @@
+CLAUDE CODE REVIEW 03 — FINDINGS AND DISPOSITION
+Recorded: November 13, 2026
+
+SOURCE AND ATTRIBUTION
+Camille supplied the response as a Claude Code review. Its supplied text is
+preserved verbatim in claude-review-03-response.txt. No model ID, original
+session export, exact executed prompt or execution log was supplied.
+Claude reports working on a copy with Python 3.13 / Node 22 and independently
+checking calculations, browser interactions and tests. Those execution claims
+are attributed to Claude; they are not independently authenticated here.
+
+CHECKED AND FIXED HERE WITH CODEX
+1. Extreme UTC conversion: reproduced OverflowError for
+   0001-01-01T00:00:00+05:00. Moved conversion inside timestamp validation and
+   catch OverflowError as a clear ValueError. The running local endpoint now
+   returns JSON HTTP 400 instead of dropping the connection. CLI validation
+   errors use argparse's clean error message rather than a traceback.
+2. Input format: reproduced acceptance of 1_000, full-width digits and date-only
+   timestamps. Amounts now require ASCII decimal syntax; timestamps require
+   date + T + time. Supported minute/second/fraction and UTC-offset forms have
+   regression checks. UTC overflows at either end are rejected.
+3. Output consistency: inspected older saved output schemas. Regenerated the
+   five-record exports with analysis.py. Redirected the learning walkthrough's
+   exports to walkthrough_outputs/ and tested that current outputs survive an
+   isolated walkthrough run unchanged.
+
+DESIGN CHOICES CLARIFIED
+- Kept Python round-half-to-even; documented the convention. No half-up change.
+- Kept case-sensitive identifiers; documented that a and A are distinct.
+- No generic catch-all Exception handler was added: the verified timestamp
+  overflow is handled at its source and tested through the request handler.
+
+VERIFICATION AFTER FIXES
+Local checks: 29 Python tests and 3 JavaScript tests passed (32 total).
+A real local HTTP request containing the extreme timestamp returned a JSON
+400 validation response. The following demo request still worked, retaining
+69.1% attainment and a 75.2% hypothetical scenario result.
+These are software checks, not evidence of measured operational benefit.
+
+LIMITATIONS / NOT CLAIMED
+Four-file CLI publication is still not a transaction across interruptions.
+Claude's suggested additional app.js automation, performance, cross-browser,
+accessibility and real-user/business validation are not claimed complete.
+The dashboard has no live Claude API integration. Its suggested investigation
+checks and findings are deterministic rules, not generated Claude responses.

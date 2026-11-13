@@ -1,0 +1,27 @@
+REVIEW PROMPT RECORD
+Recorded: November 13, 2026
+
+The text below was suggested to Camille in the Codex conversation for use in
+Claude Code. The exact prompt actually submitted to Claude was not supplied,
+so this is a suggested-prompt record, not a verified Claude input transcript.
+
+--- Suggested prompt ---
+Review this project independently. Do not change any files yet.
+
+Read the code and documentation, then run the existing Python and JavaScript tests.
+
+Check calculation accuracy, deadline boundaries, filters, investigation ordering,
+suggested checks, CSV upload/export, and the hypothetical scenario.
+
+Recalculate the five-record sample independently. Check whether the documentation
+and displayed claims match the actual functionality.
+
+Report verified bugs first, with file references and suggested fixes. Separate
+bugs from optional improvements. Be explicit about anything you could not test.
+--- End suggested prompt ---
+
+EARLIER PROMPTS
+Earlier case inputs are summarized in DEP-003-review.txt, DEP-005-review.txt and
+DEP-006-review.txt. They are not complete verbatim prompt transcripts. The exact
+original prompts and original model/session details should only be added if
+Camille retrieves them. Do not invent dates, model IDs or wording.

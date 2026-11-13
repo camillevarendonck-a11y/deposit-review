@@ -1,0 +1,22 @@
+CLAUDE CASE REVIEW — DEP-006, REVISED RESPONSE
+Recorded November 13, 2026. Source: revised Claude response supplied by student.
+Model ID and original execution time not supplied. Manual chat, not API.
+This is an evaluation summary, not the full transcript.
+
+Corrections verified:
+- Correct 90 minutes elapsed, 14:30 boundary, exclusion at the 14:00 snapshot.
+- Removes unsupported normality/reassurance claims about the 90-minute wait.
+- Missing timestamps are not treated as proof that events never happened.
+- Correctly applies credited duration <= 120 and overdue unresolved elapsed > 120.
+- Correctly explains credited and unresolved cases at and after the boundary.
+
+Precision note:
+The response correctly qualifies its 14:31 statement as whole-minute precision.
+The actual script supports seconds, so an observation at 14:30:01 would already
+be overdue if no credit were recorded. No code change is needed.
+
+Disposition:
+Both requested corrections are addressed after explicit feedback. Retain the
+original assessment. This is a revision of the same case, not a fourth independent
+example or evidence of general model accuracy. Three deliberately selected
+synthetic reviews do not establish production readiness or an API integration.

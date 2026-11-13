@@ -1,0 +1,13 @@
+{
+    "total_deposits": 5,
+    "completed_deposits": 3,
+    "unresolved_deposits": 2,
+    "target_minutes": 120,
+    "within_target": 1,
+    "over_target": 4,
+    "not_yet_due": 0,
+    "eligible_deposits": 5,
+    "target_rate_percent": 20.0,
+    "median_completion_minutes": 155.0,
+    "median_scope": "Completed deposits only; excludes records without a credit timestamp."
+}

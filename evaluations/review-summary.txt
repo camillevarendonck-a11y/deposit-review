@@ -1,0 +1,23 @@
+MANUAL CLAUDE CASE EVALUATION — CURRENT SUMMARY
+Recorded November 13, 2026. User supplied Claude outputs from manual chat.
+No API integration, independent benchmark, or general model-accuracy claim.
+
+DEP-003: Main checks passed; unnecessary uncertainty about the explicitly supplied
+case target was noted. Correct timings, evidence references and causal caution.
+DEP-005: Main checks passed. Missing records distinguished from absent events;
+elapsed time distinguished from completion time. Investigation log scope noted.
+DEP-006: Revision requested. Current arithmetic and denominator decision correct;
+unsupported normality/reassurance and mismatch with code's exact-boundary
+convention found in the explanation. Boundary inequality was not explicit in
+that prompt and will be clarified in the follow-up.
+
+These examples were deliberately selected and assessed by the project assistant.
+They do not support a model success-rate estimate. Save model IDs, original
+conversation dates, and original conversations when available.
+
+DEP-006 FOLLOW-UP
+The supplied revised response addresses both issues after explicit feedback.
+See DEP-006-revised-review.txt. Count this as a revision of the same case, not
+a fourth independent example. Keep the original issues recorded.
+The 14:31 observation statement is conditional on whole-minute precision; the
+seconds-capable implementation would already be overdue at 14:30:01.
