@@ -4,7 +4,7 @@ A local analysis workspace for USDC deposit operations. Upload records, choose a
 
 ## Open from VS Code
 
-Open this `my-deposit-project` folder in VS Code. In its terminal run:
+Open this project folder in VS Code. In its terminal run:
 
 ```sh
 python3 server.py

@@ -173,11 +173,12 @@ I selected the problem and refined the workflow while learning how the analysis
 works. The tool uses synthetic records and rule-based investigation guidance;
 it has no live Claude API integration.”
 
-8. SUBMISSION CHECK STILL NEEDED
+8. SUBMISSION NOTE
 
-The project is intended for the data-analysis format described in the competition
-information supplied in the conversation. Confirm the exact “built with Claude”
-requirement against the official rubric. Include the Claude Code design and
-guidance sessions, or representative prompts and outputs, alongside the saved
-reviews so the submission demonstrates the contribution Camille describes.
-Do not claim an API integration, agent or skill that has not been implemented.
+Camille confirmed on November 15, 2026 that the competition does not require a
+live Claude connection. This is her statement; the official rubric text is not
+stored in this repository. The Claude Code design and guidance sessions
+described in section 3 are not archived here. The saved reviews, the skill and
+MCP server test session, and the evaluation records are.
+Do not claim an API integration or an autonomous agent. The Claude Code skill
+and the read-only MCP server are implemented and described in section 3D.
