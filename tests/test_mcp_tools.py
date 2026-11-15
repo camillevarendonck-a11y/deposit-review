@@ -13,6 +13,17 @@ from engine import analyze
 
 
 class ToolChecks(unittest.TestCase):
+    def test_demo_numbers_reconcile(self):
+        """1,000 total = 940 eligible + 60 not yet due; values recomputed independently from the CSV."""
+        result = tools.analyze_file('synthetic_deposits.csv')
+        s = result['summary']
+        self.assertEqual((s['total_deposits'], s['eligible_deposits'], s['not_yet_due']), (1000, 940, 60))
+        self.assertEqual(s['eligible_deposits'] + s['not_yet_due'], s['total_deposits'])
+        self.assertEqual((s['within_target'], s['over_target']), (650, 290))
+        self.assertEqual(s['target_rate_percent'], 69.1)
+        self.assertEqual(s['median_completion_minutes'], 80)
+        self.assertEqual(result['scenario']['scenario_rate_percent'], 75.2)
+
     def test_sample_numbers_match_hand_calculation(self):
         result = tools.analyze_file('deposits.csv')
         self.assertEqual(result['summary']['target_rate_percent'], 20.0)

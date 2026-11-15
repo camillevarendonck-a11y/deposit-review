@@ -22,6 +22,8 @@ Analyze deposit records (`deposit_id, amount_usdc, initiated_at, confirmed_at, c
 
 `deposits.csv` at the defaults: 5 records, 3 completed, 1 within target, 20.0% attainment, median 155 minutes, scenario 40.0%. Queue order: DEP-004, DEP-005, DEP-003, DEP-002, DEP-001.
 
+`synthetic_deposits.csv` (note the underscore) at the defaults: 1,000 records, 850 completed, 650 within target, 290 over target or overdue, 60 not yet due. Eligible denominator 940 (1,000 minus the 60 not yet due), attainment 69.1%, completed-only median 80 minutes, scenario 75.2%. For files over 20 records, recompute these counts and the median from the raw timestamps and report any mismatch.
+
 ## Rules
 
 - Missing confirmation or credit is missing evidence, not proof an event never happened.

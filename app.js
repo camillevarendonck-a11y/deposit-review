@@ -135,7 +135,10 @@ function displayAnalysis(result) {
     const s = result.summary;
     $('target-rate').textContent = rateLabel(s.target_rate_percent);
     $('target-rate').style.color = s.target_rate_percent === null ? 'var(--muted)' : s.over_target ? 'var(--attention)' : 'var(--positive)';
-    $('rate-detail').textContent = s.eligible_deposits ? `${s.within_target} of ${s.eligible_deposits} eligible deposits met the target` : 'No eligible deposits at this observation time';
+    $('rate-detail').textContent = s.eligible_deposits
+        ? `${s.within_target} of ${s.eligible_deposits} eligible deposits met the target` +
+          (s.not_yet_due ? ` (${s.total_deposits} total; ${s.not_yet_due} not yet due excluded)` : '')
+        : 'No eligible deposits at this observation time';
     $('total').textContent = s.total_deposits;
     $('completion-note').textContent = s.completed_deposits + ' completed';
     $('unresolved').textContent = s.unresolved_deposits;
