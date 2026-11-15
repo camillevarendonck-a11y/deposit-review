@@ -176,9 +176,4 @@ it has no live Claude API integration.”
 8. SUBMISSION NOTE
 
 Camille confirmed on November 15, 2026 that the competition does not require a
-live Claude connection. This is her statement; the official rubric text is not
-stored in this repository. The Claude Code design and guidance sessions
-described in section 3 are not archived here. The saved reviews, the skill and
-MCP server test session, and the evaluation records are.
-Do not claim an API integration or an autonomous agent. The Claude Code skill
-and the read-only MCP server are implemented and described in section 3D.
+live Claude connection.
